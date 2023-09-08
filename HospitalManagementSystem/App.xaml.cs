@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HospitalManagementSystem.Models;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -13,5 +14,12 @@ namespace HospitalManagementSystem
     /// </summary>
     public partial class App : Application
     {
+        public static string Login;
+        public static HospitalDBContext DBContext;
+
+        public App()
+        {
+            DBContext = new HospitalDBContext();
+        }
     }
 }

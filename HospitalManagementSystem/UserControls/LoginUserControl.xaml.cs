@@ -40,7 +40,7 @@ namespace HospitalManagementSystem
             bool check = VerifyLoginPassword(login, password);
             if (check)
             {
-                MainWindow.Login = login;
+                App.Login = login;
                 Window.contentControl1.Content = new RolePortalUserControl();
             }
             else
