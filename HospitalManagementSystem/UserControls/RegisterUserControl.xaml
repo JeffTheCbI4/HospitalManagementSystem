@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="HospitalManagementSystem.RegisterUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HospitalManagementSystem"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+
+        <TextBox x:Name="textBoxFirstName" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Width="278" FontSize="20" Margin="400,37,0,0"/>
+        <Label x:Name="labelFirstName" Content="First name" HorizontalAlignment="Left" Margin="278,33,0,0" VerticalAlignment="Top" FontSize="20"/>
+        <TextBox x:Name="textBoxLastName" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Width="278" FontSize="20" Margin="400,79,0,0"/>
+        <Label x:Name="labelFirstName_Копировать" Content="Last name" HorizontalAlignment="Left" Margin="280,75,0,0" VerticalAlignment="Top" FontSize="20"/>
+        <TextBox x:Name="textBoxLogin" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Width="278" FontSize="20" Margin="400,121,0,0"/>
+        <Label x:Name="labelLogin" Content="Login" HorizontalAlignment="Left" Margin="320,117,0,0" VerticalAlignment="Top" FontSize="20"/>
+        <TextBox x:Name="textBoxEmail" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Width="278" FontSize="20" Margin="400,166,0,0"/>
+        <Label x:Name="labelFirstName_Копировать1" Content="E-mail" HorizontalAlignment="Left" Margin="314,162,0,0" VerticalAlignment="Top" FontSize="20"/>
+        <TextBox x:Name="textBoxPhone" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Width="278" FontSize="20" Margin="400,208,0,0"/>
+        <Label x:Name="labelFirstName_Копировать2" Content="Phone number" HorizontalAlignment="Left" Margin="239,204,0,0" VerticalAlignment="Top" FontSize="20"/>
+        <TextBox x:Name="textBoxPassword" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Width="278" FontSize="20" Margin="400,250,0,0"/>
+        <Label x:Name="labelFirstName_Копировать3" Content="Password" HorizontalAlignment="Left" Margin="287,246,0,0" VerticalAlignment="Top" FontSize="20"/>
+        <TextBox x:Name="textBoxRepeatPassword" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Width="278" FontSize="20" Margin="400,292,0,0"/>
+        <Label x:Name="labelFirstName_Копировать4" Content="Repeat password" HorizontalAlignment="Left" Margin="219,288,0,0" VerticalAlignment="Top" FontSize="20"/>
+        <Button x:Name="buttonRegister" Content="Register" HorizontalAlignment="Center" Margin="0,347,0,0" VerticalAlignment="Top" FontSize="20" Width="240" Click="buttonRegister_Click"/>
+        <Button x:Name="buttonCancel" Content="Cancel" HorizontalAlignment="Center" Margin="0,383,0,0" VerticalAlignment="Top" FontSize="20" Width="240"/>
+
+    </Grid>
+</UserControl>
