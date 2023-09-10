@@ -18,19 +18,9 @@ namespace HospitalManagementSystem
             Window = window;
         }
 
-        private void buttonRegister_Click(object sender, RoutedEventArgs e)
-        {
-            //Window.contentControl1.Content = new RegisterUserControl();
-        }
-
         private void uriEmailAddress_Click(object sender, RoutedEventArgs e)
         {
-            Window.contentControl1.Content = new RegisterUserControl(Window);
-        }
-
-        private void buttonRegister_Click_1(object sender, RoutedEventArgs e)
-        {
-
+            Window.contentControl1.Content = new RegisterUserControl(Window.contentControl1, this);
         }
 
         private void buttonLogIn_Click(object sender, RoutedEventArgs e)
@@ -40,7 +30,10 @@ namespace HospitalManagementSystem
             bool check = VerifyLoginPassword(login, password);
             if (check)
             {
-                App.Login = login;
+                var user = from u in App.DBContext.Users
+                           where u.Login.Equals(login)
+                           select u;
+                App.LoggedInUser = user.First();
                 Window.contentControl1.Content = new RolePortalUserControl();
             }
             else
@@ -51,13 +44,12 @@ namespace HospitalManagementSystem
 
         private bool VerifyLoginPassword(string login, string password)
         {
-            HospitalDBContext context = new HospitalDBContext();
+            HospitalDBContext context = App.DBContext;
             var users = from user in context.Users
                         where user.Login.Equals(login)
                         select user;
             if (!users.Any())
             {
-
                 return false;
             }
 
