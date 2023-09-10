@@ -23,11 +23,13 @@ namespace HospitalManagementSystem
     /// </summary>
     public partial class RegisterUserControl : UserControl
     {
-        MainWindow Window;
-        public RegisterUserControl(MainWindow window)
+        ContentControl OuterControl;
+        UserControl PreviousUserControl;
+        public RegisterUserControl(ContentControl outerContentControl, UserControl previousUserControl)
         {
             InitializeComponent();
-            Window = window;
+            OuterControl = outerContentControl;
+            PreviousUserControl = previousUserControl;
         }
 
         private void buttonRegister_Click(object sender, RoutedEventArgs e)
@@ -104,6 +106,11 @@ namespace HospitalManagementSystem
                              where user.Login.Equals(login)
                              select user;
             return sameLogins.Count() > 0;
+        }
+
+        private void buttonBack_Click(object sender, RoutedEventArgs e)
+        {
+            OuterControl.Content = PreviousUserControl;
         }
     }
 }
