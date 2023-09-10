@@ -23,12 +23,12 @@ namespace HospitalManagementSystem
     /// </summary>
     public partial class RegisterUserControl : UserControl
     {
-        ContentControl OuterControl;
+        ContentControl OuterContentControl;
         UserControl PreviousUserControl;
         public RegisterUserControl(ContentControl outerContentControl, UserControl previousUserControl)
         {
             InitializeComponent();
-            OuterControl = outerContentControl;
+            OuterContentControl = outerContentControl;
             PreviousUserControl = previousUserControl;
         }
 
@@ -75,6 +75,8 @@ namespace HospitalManagementSystem
             string salt = PasswordMaster.GenerateSalt();
             string passwordHash = PasswordMaster.GetSaltHashedPassword(password, salt);
 
+            HospitalDBContext context = App.DBContext;
+
             User user = new User();
             user.FirstName = firstName;
             user.LastName = lastName;
@@ -84,9 +86,11 @@ namespace HospitalManagementSystem
             user.PasswordHash = passwordHash;
             user.PasswordSalt = salt;
 
+            List<UsersRole> usersRoles = GetCheckedRoles();
+            usersRoles.ForEach(role => { role.User = user; user.UsersRoles.Add(role); });
+
             try
             {
-                HospitalDBContext context = App.DBContext;
                 context.Users.Add(user);
                 context.SaveChanges();
             } catch (SqlException ex)
@@ -96,7 +100,14 @@ namespace HospitalManagementSystem
                     "Registration failed", 
                     MessageBoxButton.OK, 
                     MessageBoxImage.Error);
+                return;
             }
+
+            MessageBox.Show(
+                    "User successfully registrated",
+                    "Success",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
         }
 
         private bool CheckNoSameLogin(string login)
@@ -108,9 +119,34 @@ namespace HospitalManagementSystem
             return sameLogins.Count() > 0;
         }
 
+        private List<UsersRole> GetCheckedRoles()
+        {
+            HospitalDBContext context = App.DBContext;
+            List<UsersRole> usersRoles = new List<UsersRole>();
+            var roles = from r in context.Roles
+                        select r;
+
+            foreach (var child in rolesStackPanel.Children)
+            {
+                if (child is CheckBox)
+                {
+                    CheckBox cbChild = (CheckBox) child;
+                    string cbRoleName = cbChild.Content.ToString();
+                    Role role = roles.First((role) => role.Name.Equals(cbRoleName));
+                    if ((bool)cbChild.IsChecked && role != null)
+                    {
+                        UsersRole usersRole = new UsersRole();
+                        usersRole.Role = role;
+                        usersRoles.Add(usersRole);
+                    }
+                }
+            }
+            return usersRoles;
+        }
+
         private void buttonBack_Click(object sender, RoutedEventArgs e)
         {
-            OuterControl.Content = PreviousUserControl;
+            OuterContentControl.Content = PreviousUserControl;
         }
     }
 }

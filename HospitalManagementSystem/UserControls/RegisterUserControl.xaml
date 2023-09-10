@@ -78,10 +78,10 @@
                       Header="User's roles" 
                       Margin="20"
                       Grid.Column="1" FontSize="20" Height="auto" Width="auto">
-                <StackPanel VerticalAlignment="Top">
-                    <CheckBox x:Name="radioButtonAdmin" Content="Doctor"/>
-                    <CheckBox x:Name="radioButtonDoctor" Content="Admin"/>
-                    <CheckBox x:Name="radioButtonPatient" Content="Patient"/>
+                <StackPanel x:Name="rolesStackPanel"  VerticalAlignment="Top">
+                    <CheckBox x:Name="checkBoxAdmin" Content="Admin"/>
+                    <CheckBox x:Name="checkBoxDoctor" Content="Doctor"/>
+                    <CheckBox x:Name="checkBoxPatient" Content="Patient"/>
                 </StackPanel>
             </GroupBox>
         </Grid>
