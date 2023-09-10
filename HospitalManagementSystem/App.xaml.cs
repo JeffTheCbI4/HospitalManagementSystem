@@ -14,7 +14,7 @@ namespace HospitalManagementSystem
     /// </summary>
     public partial class App : Application
     {
-        public static string Login;
+        public static User LoggedInUser;
         public static HospitalDBContext DBContext;
 
         public App()
