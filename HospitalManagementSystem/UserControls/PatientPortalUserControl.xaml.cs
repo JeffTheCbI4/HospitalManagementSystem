@@ -18,11 +18,15 @@ namespace HospitalManagementSystem.UserControls
     /// <summary>
     /// Логика взаимодействия для PatientUserControl.xaml
     /// </summary>
-    public partial class PatientUserControl : UserControl
+    public partial class PatientPortalUserControl : UserControl
     {
-        public PatientUserControl()
+        ContentControl OuterContentControl;
+        UserControl PreviousUserControl;
+        public PatientPortalUserControl(ContentControl outerContentControl, UserControl previousUserControl)
         {
             InitializeComponent();
+            OuterContentControl = outerContentControl;
+            PreviousUserControl = previousUserControl;
         }
     }
 }
