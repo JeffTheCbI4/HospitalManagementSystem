@@ -11,17 +11,17 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        <Button x:Name="buttonLogOut" Width="auto" Content="Log out" HorizontalAlignment="Right" FontSize="20" Margin="0,20,20,0"/>
         <TabControl x:Name="RoleTabControl" Grid.Row="1">
-            <TabItem Header="Patient" x:Name="PatientTab">
+            <TabItem x:Name="PatientTab" Header="Patient" FontSize="20" Visibility="Hidden">
                 <Grid Background="#FFE5E5E5"/>
             </TabItem>
-            <TabItem Header="Doctor">
+            <TabItem x:Name="DoctorTab" Header="Doctor" FontSize="20" Visibility="Hidden">
                 <Grid Background="#FFE5E5E5"/>
             </TabItem>
-            <TabItem Header="Admin">
+            <TabItem x:Name="AdminTab" Header="Admin" FontSize="20" Visibility="Hidden">
                 <Grid Background="#FFE5E5E5"/>
             </TabItem>
-            <Border BorderBrush="Black" BorderThickness="1"/>
         </TabControl>
     </Grid>
 </UserControl>

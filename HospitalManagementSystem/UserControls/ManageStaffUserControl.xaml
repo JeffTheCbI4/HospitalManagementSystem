@@ -1,0 +1,74 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HospitalManagementSystem.UserControls"
+             xmlns:Models="clr-namespace:HospitalManagementSystem.Models" x:Class="HospitalManagementSystem.UserControls.ManageStaffUserControl"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+
+        <DataGrid x:Name="DataGridStaff" 
+                  Grid.Column="0"
+                  FontSize="10" Margin="10"
+                  Height="auto"
+                  MouseDoubleClick="DataGridStaff_MouseDoubleClick"
+                  AutoGenerateColumns="False" 
+                  DataContext="HospitalDBContext"
+                  SelectedItem="{Binding Path=ChosenUser, Mode=TwoWay}" CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="True" >
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="UserId" Binding="{Binding UserId}" Visibility="Hidden"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding FirstName}"/>
+                <DataGridTextColumn Header="Last name" Binding="{Binding LastName}"/>
+                <DataGridTextColumn Header="Login" Binding="{Binding Login}"/>
+                <DataGridTextColumn Header="Email" Binding="{Binding Email}"/>
+                <DataGridTextColumn Header="Phone" Binding="{Binding Phone}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <StackPanel Grid.Column="1" Height="auto">
+            <Grid >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <Button x:Name="buttonAddSpecialty"  Grid.Column="0" Content="+" FontSize="20" Height="40" Margin="10" Width="40" HorizontalAlignment="Left" IsEnabled="False"/>
+                <Button x:Name="buttonRemoveSpecialty" Grid.Column="1" Content="-" FontSize="20" Height="40" Margin="10" Width="40" HorizontalAlignment="Right" IsEnabled="False"/>
+            </Grid>
+            <TextBlock>Specialties</TextBlock>
+            <DataGrid x:Name="DataGridSpecialties" FontSize="10" Margin="10" Height="auto"/>
+        </StackPanel>
+        
+        <StackPanel Grid.Column="2">
+            <Grid >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <Button x:Name="buttonAddRoom" Grid.Column="0" Content="+" FontSize="20" Height="40" Margin="10" Width="40" HorizontalAlignment="Left" IsEnabled="False"/>
+                <Button x:Name="buttonRemoveRoom" Grid.Column="1" Content="-" FontSize="20" Height="40" Margin="10" Width="40" HorizontalAlignment="Right" IsEnabled="False"/>
+            </Grid>
+            <TextBlock>Assigned rooms</TextBlock>
+            <DataGrid x:Name="DataGridRooms" FontSize="10" Margin="10" Height="auto"/>
+        </StackPanel>
+        
+        <StackPanel Grid.Column="3">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Margin="10" FontSize="14">Chosen employee:</TextBlock>
+                <TextBlock x:Name="textBlockFullName" Margin="0,10,10,10" FontSize="14">None</TextBlock>
+            </StackPanel>
+            <Button x:Name="buttonSetSpecialties" Content="Set specialties" Width="200" HorizontalAlignment="Center" FontSize="20" Margin="0,10,0,10" IsEnabled="False" />
+            <Button x:Name="buttonAssignRoom" Content="Assign room" Width="200" HorizontalAlignment="Center" FontSize="20" Margin="0,0,0,10" IsEnabled="False"/>
+            <Button x:Name="buttonMakeAppointment" Content="Make appointment" Width="200" HorizontalAlignment="Center" FontSize="20" Margin="0,0,0,10" IsEnabled="False"/>
+            <Button x:Name="buttonBack" Content="Back" Width="200" HorizontalAlignment="Center" FontSize="20" Margin="0,0,0,10" Click="buttonBack_Click"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

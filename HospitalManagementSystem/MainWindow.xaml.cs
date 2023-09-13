@@ -21,7 +21,6 @@ namespace HospitalManagementSystem
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static string Login;
         public MainWindow()
         {
             InitializeComponent();

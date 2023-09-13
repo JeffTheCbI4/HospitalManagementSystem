@@ -1,4 +1,5 @@
 ﻿using HospitalManagementSystem.Models;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,11 +23,13 @@ namespace HospitalManagementSystem
     /// </summary>
     public partial class RegisterUserControl : UserControl
     {
-        MainWindow Window;
-        public RegisterUserControl(MainWindow window)
+        ContentControl OuterContentControl;
+        UserControl PreviousUserControl;
+        public RegisterUserControl(ContentControl outerContentControl, UserControl previousUserControl)
         {
             InitializeComponent();
-            Window = window;
+            OuterContentControl = outerContentControl;
+            PreviousUserControl = previousUserControl;
         }
 
         private void buttonRegister_Click(object sender, RoutedEventArgs e)
@@ -45,16 +48,34 @@ namespace HospitalManagementSystem
                 String.IsNullOrEmpty(password) ||
                 String.IsNullOrEmpty(repeatPassword))
             {
-                MessageBox.Show("One of the mandatory fields is empty", "Empty field", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(
+                    "One of the mandatory fields is empty",
+                    "Empty field",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                return;
+            } else if (CheckNoSameLogin(login))
+            {
+                MessageBox.Show(
+                    "This login is already taken",
+                    "Login taken",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
                 return;
             } else if (!password.Equals(repeatPassword))
             {
-                MessageBox.Show("Password and repeated password don't match", "Password mismatch", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(
+                    "Password and repeated password don't match",
+                    "Password mismatch",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
                 return;
             }
 
             string salt = PasswordMaster.GenerateSalt();
             string passwordHash = PasswordMaster.GetSaltHashedPassword(password, salt);
+
+            HospitalDBContext context = App.DBContext;
 
             User user = new User();
             user.FirstName = firstName;
@@ -65,9 +86,67 @@ namespace HospitalManagementSystem
             user.PasswordHash = passwordHash;
             user.PasswordSalt = salt;
 
-            HospitalDBContext context = new HospitalDBContext();
-            context.Users.Add(user);
-            context.SaveChanges();
+            List<UsersRole> usersRoles = GetCheckedRoles();
+            usersRoles.ForEach(role => { role.User = user; user.UsersRoles.Add(role); });
+
+            try
+            {
+                context.Users.Add(user);
+                context.SaveChanges();
+            } catch (SqlException ex)
+            {
+                MessageBox.Show(
+                    "Registration failed. Reason: \n" + ex.Message, 
+                    "Registration failed", 
+                    MessageBoxButton.OK, 
+                    MessageBoxImage.Error);
+                return;
+            }
+
+            MessageBox.Show(
+                    "User successfully registrated",
+                    "Success",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+        }
+
+        private bool CheckNoSameLogin(string login)
+        {
+            var context = App.DBContext;
+            var sameLogins = from user in context.Users
+                             where user.Login.Equals(login)
+                             select user;
+            return sameLogins.Count() > 0;
+        }
+
+        private List<UsersRole> GetCheckedRoles()
+        {
+            HospitalDBContext context = App.DBContext;
+            List<UsersRole> usersRoles = new List<UsersRole>();
+            var roles = from r in context.Roles
+                        select r;
+
+            foreach (var child in rolesStackPanel.Children)
+            {
+                if (child is CheckBox)
+                {
+                    CheckBox cbChild = (CheckBox) child;
+                    string cbRoleName = cbChild.Content.ToString();
+                    Role role = roles.First((role) => role.Name.Equals(cbRoleName));
+                    if ((bool)cbChild.IsChecked && role != null)
+                    {
+                        UsersRole usersRole = new UsersRole();
+                        usersRole.Role = role;
+                        usersRoles.Add(usersRole);
+                    }
+                }
+            }
+            return usersRoles;
+        }
+
+        private void buttonBack_Click(object sender, RoutedEventArgs e)
+        {
+            OuterContentControl.Content = PreviousUserControl;
         }
     }
 }
