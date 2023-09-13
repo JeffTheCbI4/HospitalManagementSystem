@@ -17,11 +17,11 @@
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <Button x:Name="buttonManageStaff" Content="Manage Staff" Grid.Column="0" Grid.Row="0" Width="200" Height="100" FontSize="20"/>
+        <Button x:Name="buttonManageStaff" Content="Manage Staff" Grid.Column="0" Grid.Row="0" Width="200" Height="100" FontSize="20" Click="buttonManageStaff_Click"/>
         <Button x:Name="buttonManagePatients" Content="Manage Patients" Grid.Column="1" Grid.Row="0" Width="200" Height="100" FontSize="20"/>
         <Button x:Name="buttonManageRooms" Content="Manage Rooms" Grid.Column="2" Grid.Row="0" Width="200" Height="100" FontSize="20"/>
         <Button x:Name="buttonRegisterUser" Content="Register User" Grid.Column="0" Grid.Row="1" Width="200" Height="100" FontSize="20" Click="buttonRegisterUser_Click"/>
-        <Button x:Name="buttonManageMedicine" Content="Manage medicine" Grid.Column="1" Grid.Row="1" Width="200" Height="100" FontSize="20"/>
+        <Button x:Name="buttonManageMedicine" Content="Manage medicine" Grid.Column="1" Grid.Row="1" Width="200" Height="100" FontSize="20" Click="buttonManageMedicine_Click"/>
         <Button x:Name="buttonManageSpecialties" Content="Manage specialties" Grid.Column="2" Grid.Row="1" Width="200" Height="100" FontSize="20"/>
     </Grid>
 </UserControl>

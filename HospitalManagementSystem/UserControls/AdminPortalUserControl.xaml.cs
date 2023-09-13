@@ -33,5 +33,15 @@ namespace HospitalManagementSystem.UserControls
         {
             OuterContentControl.Content = new RegisterUserControl(OuterContentControl, this);
         }
+
+        private void buttonManageStaff_Click(object sender, RoutedEventArgs e)
+        {
+            OuterContentControl.Content = new ManageStaffUserControl(OuterContentControl, this);
+        }
+
+        private void buttonManageMedicine_Click(object sender, RoutedEventArgs e)
+        {
+            OuterContentControl.Content = new MedicineUserControl(OuterContentControl, this);
+        }
     }
 }
