@@ -43,5 +43,10 @@ namespace HospitalManagementSystem.UserControls
         {
             OuterContentControl.Content = new MedicineUserControl(OuterContentControl, this);
         }
+
+        private void buttonManageRooms_Click(object sender, RoutedEventArgs e)
+        {
+            OuterContentControl.Content = new ManageRoomsUserControl(OuterContentControl, this);
+        }
     }
 }

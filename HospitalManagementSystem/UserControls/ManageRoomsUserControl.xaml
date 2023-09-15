@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="HospitalManagementSystem.UserControls.ManageRoomsUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HospitalManagementSystem.UserControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" >
+            <TextBlock>Rooms list</TextBlock>
+            <DataGrid
+                  AutoGenerateColumns="False" 
+                  CommandManager.PreviewCanExecute="dataGrid_PreviewCanExecute"
+                  ItemsSource="{Binding Rooms}"
+                  SelectedItem="{Binding Room}" RowEditEnding="dataGrid_RowEditEnding">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding RoomId}" Header="Id" IsReadOnly="True"/>
+                    <DataGridTextColumn Binding="{Binding Name, UpdateSourceTrigger=LostFocus}" Header="Room name" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+        <StackPanel Grid.Column="1">
+            <TextBlock>Room's name:</TextBlock>
+            <TextBox Text="{Binding AddingRoomName, UpdateSourceTrigger=LostFocus}" />
+            <TextBlock>Room's capacity:</TextBlock>
+            <TextBox Text="{Binding AddingRoomCapacity, UpdateSourceTrigger=LostFocus}"
+                     PreviewTextInput="TextBox_PreviewTextInput"  />
+            <Button Content="Add" Click="ButtonAddRoom_Click" />
+            <Button Content="See or assign users" />
+            <Button Content="Back" Click="ButtonBack_Click" />
+        </StackPanel>
+    </Grid>
+</UserControl>
