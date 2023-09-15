@@ -16,6 +16,7 @@
             <DataGrid x:Name="dataGridMedicine" 
                       AutoGenerateColumns="False" 
                       CommandManager.PreviewCanExecute="dataGridMedicine_PreviewCanExecute"
+                      ItemsSource="{Binding MedicinesColl}"
                       SelectedItem="{Binding Medicine}" RowEditEnding="dataGridMedicine_RowEditEnding">
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding MedicineId}" Header="Id" IsReadOnly="True"/>
@@ -26,7 +27,7 @@
         <StackPanel Grid.Column="1">
             <TextBlock>Medicine's name:</TextBlock>
             <TextBox x:Name="textBoxMedicineName" />
-            <Button Content="Add" Click="ButtonAddMedicine_Click"/>
+            <Button Content="Add" Click="ButtonAddMedicine_Click" />
             <Button Content="Back" Click="ButtonBack_Click" />
         </StackPanel>
     </Grid>

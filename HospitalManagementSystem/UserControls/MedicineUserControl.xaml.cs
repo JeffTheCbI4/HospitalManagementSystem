@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Collections.ObjectModel;
 
 namespace HospitalManagementSystem.UserControls
 {
@@ -23,12 +24,14 @@ namespace HospitalManagementSystem.UserControls
     {
         ContentControl OuterContentControl;
         UserControl PreviousUserControl;
+        public ObservableCollection<Medicine> MedicinesColl { get; set; } = new ObservableCollection<Medicine>();
         public MedicineUserControl(ContentControl outerContentControl, UserControl previousUserControl)
         {
             InitializeComponent();
             OuterContentControl = outerContentControl;
             PreviousUserControl = previousUserControl;
-            UpdateDataGridMedicine();
+            InitMedicinesColl();
+            this.DataContext = this;
         }
 
         private void ButtonAddMedicine_Click(object sender, RoutedEventArgs e)
@@ -46,8 +49,7 @@ namespace HospitalManagementSystem.UserControls
                 context.Medicines.Add(med);
                 context.SaveChanges();
 
-                //TODO: Find another way of adding new row
-                UpdateDataGridMedicine();
+                MedicinesColl.Add(med);
             } catch (Exception ex)
             {
                 MessageBox.Show(
@@ -64,12 +66,12 @@ namespace HospitalManagementSystem.UserControls
                 MessageBoxImage.Information);
         }
 
-        private void UpdateDataGridMedicine()
+        private void InitMedicinesColl()
         {
             var context = App.DBContext;
             var meds = from med in context.Medicines
                        select med;
-            dataGridMedicine.ItemsSource = meds.ToList();
+            MedicinesColl = new ObservableCollection<Medicine>(meds.ToList());
         }
 
         private void ButtonBack_Click(object sender, RoutedEventArgs e)
@@ -114,15 +116,11 @@ namespace HospitalManagementSystem.UserControls
             try
             {                
                 var context = App.DBContext;
-                Medicine? editedRow = e.Row.DataContext as Medicine ?? throw new Exception("Couldn't find edited row");
-                if (string.IsNullOrWhiteSpace(editedRow.Name.Trim())) throw new Exception("New name must not be empty");
+                Medicine? editedMedicine = e.Row.DataContext as Medicine ?? throw new Exception("Couldn't find edited row");
+                string trimmedName = editedMedicine.Name.Trim();
+                if (string.IsNullOrWhiteSpace(trimmedName)) throw new Exception("New name must not be empty");
 
-                var dbMed = (from med in context.Medicines
-                             where med.MedicineId == editedRow.MedicineId
-                             select med).SingleOrDefault()
-                             ?? throw new Exception("Couldn't find edited medicine in database");
-
-                dbMed.Name = editedRow.Name;
+                editedMedicine.Name = trimmedName;
                 context.SaveChanges();
             } catch (Exception ex)
             {
