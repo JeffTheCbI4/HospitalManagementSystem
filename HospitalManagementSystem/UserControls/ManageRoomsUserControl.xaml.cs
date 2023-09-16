@@ -1,4 +1,5 @@
 ﻿using HospitalManagementSystem.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -24,13 +25,22 @@ namespace HospitalManagementSystem.UserControls
     /// </summary>
     public partial class ManageRoomsUserControl : UserControl, INotifyPropertyChanged
     {
+        private string _addingRoomName = "";
+        private int _addingRoomCapacity;
+        private string _addingRoomTypeName = "";
+        private RoomType _selectedRoomType = new()
+        {
+            Name = "None"
+        };
+
         ContentControl OuterContentControl;
         UserControl PreviousUserControl;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public ObservableCollection<Room> Rooms { get; set; } = new ObservableCollection<Room>();
-        private string _addingRoomName = "";
+        public ObservableCollection<RoomType> RoomTypes { get; set; } 
+            = new ObservableCollection<RoomType>();
         public string AddingRoomName { 
             get { return _addingRoomName; } 
             set 
@@ -41,7 +51,6 @@ namespace HospitalManagementSystem.UserControls
                     NotifyPropertyChanged("AddingRoomName");
                 }
             } }
-        private int _addingRoomCapacity { get; set; }
         public int AddingRoomCapacity {
             get { return _addingRoomCapacity; }
             set
@@ -53,13 +62,52 @@ namespace HospitalManagementSystem.UserControls
                 }
             }
         }
+        public string AddingRoomTypeName
+        {
+            get { return _addingRoomTypeName; }
+            set
+            {
+                if (!_addingRoomTypeName.Equals(value))
+                {
+                    _addingRoomTypeName = value;
+                    NotifyPropertyChanged("AddingRoomTypeName");
+                }
+            }
+        }
+        public RoomType SelectedRoomType
+        {
+            get { return _selectedRoomType; }
+            set
+            {
+                if (_selectedRoomType == null || !_selectedRoomType.Equals(value))
+                {
+                    _selectedRoomType = value;
+                    NotifyPropertyChanged("SelectedRoomType");
+                }
+            }
+        }
 
         public ManageRoomsUserControl(ContentControl outerContentControl, UserControl previousUserControl)
         {
             InitializeComponent();
             OuterContentControl = outerContentControl;
             PreviousUserControl = previousUserControl;
+            InitRoomTypesCollection();
+            InitRoomsCollection();
             this.DataContext = this;
+        }
+
+        private void InitRoomsCollection()
+        {
+            var rooms = from room in App.DBContext.Rooms
+                        select room;
+            Rooms = new ObservableCollection<Room>(rooms.ToList());
+        }
+        private void InitRoomTypesCollection()
+        {
+            var types = from type in App.DBContext.RoomTypes
+                        select type;
+            RoomTypes = new ObservableCollection<RoomType>(types.ToList());
         }
 
         private void ButtonAddRoom_Click(object sender, RoutedEventArgs e)
@@ -68,7 +116,7 @@ namespace HospitalManagementSystem.UserControls
             {
                 string roomName = AddingRoomName.Trim();
                 int roomCapacity = AddingRoomCapacity;
-                if (String.IsNullOrWhiteSpace(roomName))
+                if (string.IsNullOrWhiteSpace(roomName))
                 {
                     throw new Exception("Name must not be empty or white space");
                 }
@@ -76,7 +124,8 @@ namespace HospitalManagementSystem.UserControls
                 Room room = new()
                 {
                     Name = roomName,
-                    Capacity = roomCapacity
+                    Capacity = roomCapacity,
+                    RoomTypeId = SelectedRoomType.RoomTypeId,
                 };
                 context.Rooms.Add(room);
                 context.SaveChanges();
@@ -104,20 +153,51 @@ namespace HospitalManagementSystem.UserControls
             OuterContentControl.Content = PreviousUserControl;
         }
 
-        private void dataGrid_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
+        private void dataGridRoom_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
         {
 
         }
 
-        private void dataGrid_PreviewCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        private void dataGridRoom_PreviewCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            
+            DeleteRowFromDataGrid(sender, e, App.DBContext.Rooms);
+        }
+
+        private void dataGridRoomType_PreviewCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            DeleteRowFromDataGrid(sender, e, App.DBContext.RoomTypes);
+        }
+
+        private void DeleteRowFromDataGrid<T> (object sender, CanExecuteRoutedEventArgs e, DbSet<T> contextTable) where T : class
+        {
+            if (e.Command != DataGrid.DeleteCommand)
+            {
+                return;
+            }
+            var answer = MessageBox.Show(
+                    "Are you sure you want to delete selected rows?",
+                    "Warning",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+            if (answer == MessageBoxResult.Yes)
+            {
+                var selectedItems = ((DataGrid)e.Source).SelectedItems;
+                foreach (T item in selectedItems)
+                {
+                    contextTable.Remove(item);
+                }
+                App.DBContext.SaveChanges();
+            }
+            else
+            {
+                e.Handled = true;
+            }
         }
 
         private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             Regex regex = new Regex("[^0-9]+");
-            e.Handled = regex.IsMatch(e.Text);
+            e.Handled = regex.IsMatch(e.Text) && !string.IsNullOrWhiteSpace(e.Text);
         }
 
         private void NotifyPropertyChanged(string propName)
@@ -126,6 +206,46 @@ namespace HospitalManagementSystem.UserControls
                 if (PropertyChanged != null)
                     PropertyChanged(this, new PropertyChangedEventArgs(propName));
             }
+        }
+
+        private void ButtonAddRoomType_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string typeName = AddingRoomTypeName.Trim();
+                if (string.IsNullOrWhiteSpace(typeName))
+                {
+                    throw new Exception("Name must not be empty or white space");
+                }
+                var context = App.DBContext;
+                RoomType type = new()
+                {
+                    Name = typeName
+                };
+                context.RoomTypes.Add(type);
+                context.SaveChanges();
+
+                RoomTypes.Add(type);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                "Failed to add room type to database. Reason:\n" + ex.Message,
+                "Fail",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+                return;
+            }
+            MessageBox.Show(
+                "Room type successfully added",
+                "Success",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+        }
+
+        private void dataGridRoomType_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
+        {
+
         }
     }
 }

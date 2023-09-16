@@ -10,27 +10,54 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition />
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Column="0" >
             <TextBlock>Rooms list</TextBlock>
             <DataGrid
-                  AutoGenerateColumns="False" 
-                  CommandManager.PreviewCanExecute="dataGrid_PreviewCanExecute"
-                  ItemsSource="{Binding Rooms}"
-                  SelectedItem="{Binding Room}" RowEditEnding="dataGrid_RowEditEnding">
+                AutoGenerateColumns="False" 
+                CommandManager.PreviewCanExecute="dataGridRoom_PreviewCanExecute"
+                ItemsSource="{Binding Rooms}"
+                SelectedItem="{Binding Room}" 
+                RowEditEnding="dataGridRoom_RowEditEnding">
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding RoomId}" Header="Id" IsReadOnly="True"/>
                     <DataGridTextColumn Binding="{Binding Name, UpdateSourceTrigger=LostFocus}" Header="Room name" />
+                    <DataGridTextColumn Binding="{Binding Capacity}" Header="Capacity" />
+                    <DataGridTextColumn Binding="{Binding RoomType.Name}" Header="Type" />
                 </DataGrid.Columns>
             </DataGrid>
         </StackPanel>
-        <StackPanel Grid.Column="1">
-            <TextBlock>Room's name:</TextBlock>
+        
+        <StackPanel Grid.Column="1" >
+            <TextBlock>Room types</TextBlock>
+            <DataGrid
+                AutoGenerateColumns="False"
+                CommandManager.PreviewCanExecute="dataGridRoomType_PreviewCanExecute"
+                ItemsSource="{Binding RoomTypes}"
+                SelectedItem="{Binding SelectedRoomType, UpdateSourceTrigger=PropertyChanged}"
+                RowEditEnding="dataGridRoomType_RowEditEnding">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding RoomTypeId}" Header="Id" IsReadOnly="True"/>
+                    <DataGridTextColumn Binding="{Binding Name, UpdateSourceTrigger=Explicit}" Header="Type name" />                    
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+        
+        <StackPanel Grid.Column="2">
+            <TextBlock>New room's name:</TextBlock>
             <TextBox Text="{Binding AddingRoomName, UpdateSourceTrigger=LostFocus}" />
-            <TextBlock>Room's capacity:</TextBlock>
+            <TextBlock>New room's capacity:</TextBlock>
             <TextBox Text="{Binding AddingRoomCapacity, UpdateSourceTrigger=LostFocus}"
                      PreviewTextInput="TextBox_PreviewTextInput"  />
-            <Button Content="Add" Click="ButtonAddRoom_Click" />
+            <TextBlock>Selected type:</TextBlock>
+            <TextBlock DataContext="{Binding SelectedRoomType}" Text="{Binding Name}" />
+            <Button Content="Add new room" Click="ButtonAddRoom_Click" />
+
+            <TextBlock>New type's name:</TextBlock>
+            <TextBox Text="{Binding AddingRoomTypeName, UpdateSourceTrigger=LostFocus}" />
+            <Button Content="Add new room type" Click="ButtonAddRoomType_Click" />
+
             <Button Content="See or assign users" />
             <Button Content="Back" Click="ButtonBack_Click" />
         </StackPanel>
